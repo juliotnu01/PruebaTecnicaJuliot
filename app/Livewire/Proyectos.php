@@ -25,7 +25,9 @@ class Proyectos extends Component
 
     public function render()
     {
-        return view('livewire.proyectos');
+        return view('livewire.proyectos', [
+            "proyectos"  => $this->proyectos 
+        ]);
     }
     /**
      * 
@@ -35,7 +37,6 @@ class Proyectos extends Component
      */
     public function store()
     {
-        try {
             $idUser = auth()->id();
             $url = asset($this->img->storePublicly("photos/user_$idUser", 'public')) ;
             $proyecto = new Proyecto();
@@ -46,9 +47,22 @@ class Proyectos extends Component
             $proyecto->user_id = $idUser;
             $proyecto->save();
             $this->reset(); 
-        } catch (\Throwable $th) {
-            throw $th;
-        }
+            $this->proyectos = Proyecto::with(['belongsToUser'])->where('user_id', auth()->id())->get();
+        
         
     }
+
+    public function toggleIsBorrador($index)
+    {
+        $registro = $this->proyectos[$index];
+        $registro->update([
+            'isBorrador' => !$registro->isBorrador,
+        ]);
+    }
+
+    public function DeleteRegistro($id){
+        Proyecto::find($id)->delete();
+        $this->proyectos = Proyecto::with(['belongsToUser'])->where('user_id', auth()->id())->get();
+    }
+
 }
