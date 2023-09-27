@@ -14,8 +14,8 @@ class Proyecto extends Model
     /**
      * relacion de a que usuario pertenece el proyecto
      */
-    function belongsToUser(){
-       return $this->belongsTo(User::class, 'user_id'); 
+    public function belongsToUser(){
+        return $this->belongsTo(User::class, 'user_id'); 
     }
     
 }
